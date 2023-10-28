@@ -1,0 +1,51 @@
+checkmark="✓"
+x_mark="✗"
+grading_lab() {
+
+   # No 1
+   score1=0
+   
+   if [ -f "/home/kusumaningrat/test.tar.gz" ]; then
+         score1=$(( score1 + 10))
+         echo "Create backup file on home directory: [ $checkmark ] "
+   else
+	 echo "Create backup file on home directory: [ $checkmark ] "
+   fi
+
+   sleep 3
+
+   # No 2
+   score2=0
+
+   if [ "ls -l /tmp/test* | wc -l" == 5 ]; then
+           score2=$(( score2 + 40 ))
+           echo "Count files on /tmp directory: [ $checkmark] "
+   else
+           echo "Count files on /tmp directory: [ $x_mark ]"
+   fi
+
+   sleep 3
+
+   # No 3
+   score3=0
+
+   if [ -d "/home/manager" ]; then
+           score3=$(( score3 + 50 ))
+           echo "Create manager directory at /home: [ $checkmark ]"
+   else
+           echo "Create manager directory at /home: [ $x_mark ]"
+   fi
+
+   sleep 4
+
+   total_score=$(( score1 + score2 + score3 ))
+
+   if [ "$total_score" -lt 50 ]; then
+           echo -e "Your score is $total_score: \e[31mFail\e[0m"
+   else
+           echo -e "Your score is $total_score: \e[32mPass\e[0m"
+   fi
+
+}
+
+grading_lab

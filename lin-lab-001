@@ -1,0 +1,89 @@
+checkmark="✓"
+x_mark="✗"
+workdir="/opt"
+grading_lab() {
+
+   # No 1
+   score1=0
+
+   if [ -d "$workdir/manager" ] || [ -d "$workdir/ops" ] || [ -d "$workdir/client" ]; then
+           score1=$(( score1 + 15 ))
+           echo "Create working directory: [ $checkmark ]"
+   else
+           echo "Create working directory: [ $x_mark ]"
+   fi
+
+   sleep 3
+
+   # No 2
+   score2=0
+
+   if [ $(ls -l $workdir/manager/ | grep manager | wc -l) -eq 10 ]; then
+        score2=$(( score2 + 15 ))
+        echo "Create manager files in /opt/manager/: [ $checkmark]"
+   else
+	echo "Create manager files in /opt/manager/: [ $x_mark ]"
+   fi
+   sleep 3
+
+   # No 3
+   score3=0
+
+   if [ $(ls -l $workdir/ops | grep ops | wc -l) -eq 100 ]; then
+        score2=$(( score2 + 15 ))
+        echo "Create manager files in /opt/ops/: [ $checkmark] "
+   else
+	echo "Create manager files in /opt/ops/: [ $x_mark ]"
+   fi
+
+   sleep 3
+
+   # No 4
+   score4=0
+
+   if [ $(ls -l $workdir/client | grep client | wc -l) -eq 200 ]; then
+         score2=$(( score2 + 15 ))
+         echo "Create manager files in /opt/client/: [ $checkmark] "
+   else
+	echo "Create manager files in /opt/client/: [ $x_mark ]"
+   fi
+   sleep 3
+
+   # No 5
+   score5=0
+
+   if grep -q -e "manager=10" -e "ops=100" -e "client=200" /opt/result.txt 2> /dev/null; then
+	    score5=$(( score5 + 40 ))
+	    echo "Create result file from count files: [ $checkmark ]"
+   else
+	    
+	    echo "Create result file from count files: [ $x_mark ]"
+
+   fi
+
+   sleep 3
+
+   total_score=$(( score1 + score2 + score3 + score4 + score5 ))
+
+   if [ "$total_score" -lt 50 ]; then
+           echo -e "Your score is $total_score: \e[31mFail\e[0m"
+   else
+           echo -e "Your score is $total_score: \e[32mPass\e[0m"
+   fi
+
+}
+
+finish_lab() {
+
+   rm  /opt/manager/* /opt/ops/* /opt/client/* 2> /dev/null
+   rm -rf /opt/manager /opt/ops /opt/client 2> /dev/null
+   rm /opt/result.txt 2> /dev/null
+}
+
+if [ "$1" == "grading_lab" ]; then
+	grading_lab
+elif [ "$1" == "finish_lab" ]; then
+	finish_lab
+else
+	echo "Invalid file"
+fi
