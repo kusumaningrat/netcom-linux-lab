@@ -9,7 +9,7 @@ grading_lab() {
          score1=$(( score1 + 10))
          echo "Create backup file on home directory: [ $checkmark ] "
    else
-	 echo "Create backup file on home directory: [ $checkmark ] "
+	 echo "Create backup file on home directory: [ $x_mark ] "
    fi
 
    sleep 3
@@ -30,10 +30,21 @@ grading_lab() {
    score3=0
 
    if [ -d "/home/manager" ]; then
-           score3=$(( score3 + 50 ))
+           score3=$(( score3 + 25 ))
            echo "Create manager directory at /home: [ $checkmark ]"
    else
            echo "Create manager directory at /home: [ $x_mark ]"
+   fi
+
+   sleep 4
+
+   # No 4
+   score4=0
+   if [ -d "/home/ops" ]; then
+           score4=$(( score3 + 25 ))
+           echo "Create ops directory at /home: [ $checkmark ]"
+   else
+           echo "Create ops directory at /home: [ $x_mark ]"
    fi
 
    sleep 4
