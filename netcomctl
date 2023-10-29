@@ -1,0 +1,78 @@
+#!/bin/bash
+
+user_home_dir=$(eval echo ~$USER)
+class_dir="$user_home_dir/.class"
+action_name="$1"
+lab_name="$2"
+class="$class_dir/${lab_name}"
+
+start_flag_file=".start_flag"
+
+show_help() {
+    echo "Usage: netcomctl [action] [lab_name]"
+    echo "Actions:"
+    echo "  start     Start the lab"
+    echo "  grade     Grade the lab"
+    echo "  finish    Finish and clean up the lab"
+    echo "lab_name: Name of the lab [eg. lin-lab-001]"
+}
+
+if [ -z "$1" ]; then
+    show_help
+    exit 0
+fi
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+    show_help
+    exit 0
+fi
+
+if [ ! -f "$start_flag_file" ]; then
+    start_flag="false"
+else
+    start_flag=$(<"$start_flag_file")
+fi
+
+if [ "$action_name" == "start" ]; then
+    if [ -z "$lab_name" ]; then
+        echo "Provide lab name"
+    else
+        echo "Starting the lab: $lab_name"
+        # Set the flag to indicate that "start" has been executed
+        echo "true" > "$start_flag_file"
+        sleep 5
+    fi
+elif [ "$action_name" == "grade" ]; then
+    if [ "$start_flag" == "true" ]; then
+        if [ -z "$lab_name" ]; then
+            echo "Provide lab name"
+        else
+            echo "Grading the lab: $lab_name"
+	    sleep 2
+            bash "$class" grading_lab
+            sleep 5
+        fi
+    else
+        echo "Cannot grade before starting the lab."
+    fi
+elif [ "$action_name" == "finish" ]; then
+    if [ "$start_flag" == "true" ]; then
+        if [ -z "$lab_name" ]; then
+            echo "Provide lab name"
+        else
+            echo "Cleaning up the lab: $lab_name"
+            bash "$class" finish_lab
+            echo "false" > $start_flag_file
+            sleep 5
+        fi
+    else
+        echo "Cannot finish before starting the lab."
+    fi
+elif [ "$action_name" == "update" ]; then
+     echo "Updating the lab.."
+     cd .class 
+     git pull origin dev > /dev/null 2>&1
+     echo "Lab updated"
+else
+    echo "Provide action name [start, grade, finish]"
+fi
+
